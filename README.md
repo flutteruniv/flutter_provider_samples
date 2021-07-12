@@ -1,16 +1,114 @@
-# flutter_provider_sample
+## providerの基本の書き方
 
-A new Flutter application.
+- ChangeNotifierProvider<Model>で囲んでmodelをイニシャライズする
+- modelの値変更に応じてリビルドしたい箇所をConsumer<Model>で囲む
 
-## Getting Started
+```dart
+class CountPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<CountModel>(
+      create: (_) => CountModel(),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: Center(
+          child: Consumer<CountModel>(builder: (context, model, child) {
+            final count = model.count;
+            return Text(
+              '$count',
+              style: TextStyle(
+                fontSize: 80,
+                color: Colors.red,
+              ),
+            );
+          }),
+        ),
+        floatingActionButton:
+            Consumer<CountModel>(builder: (context, model, child) {
+          return FloatingActionButton(
+            onPressed: model.incrementCounter,
+            child: Icon(Icons.add),
+          );
+        }),
+      ),
+    );
+  }
+}
+```
+  
+## provider配下のWidgetはproviderで囲まれたmodelを呼び出せる
+  
+以下のようにCountPageBodyを定義した場合
 
-This project is a starting point for a Flutter application.
+```dart
+class CountPage3 extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return ChangeNotifierProvider<CountModel>(
+      create: (_) => CountModel(),
+      child: Scaffold(
+        appBar: AppBar(),
+        body: CountPageBody(),
+        floatingActionButton: CountButton(),
+      ),
+    );
+  }
+}
+```
 
-A few resources to get you started if this is your first Flutter project:
+CountPageBodyでは、後述する４通りの書き方によりmodelを呼び出せる。
+  
+```dart
+class CountPageBody extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final model = context.watch<CountModel>();
+    final count = model.count;
+    return Center(
+      child: Text(
+        '$count',
+        style: TextStyle(
+          fontSize: 80,
+          color: Colors.red,
+        ),
+      ),
+    );
+  }
+}
+```
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## providerのmodelの呼び出し方
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### Provider.of
+
+notifiListeners()で変更されたら呼ばれる。
+
+```dart
+final model = Provider.of<CountModel>(context);
+```
+
+### context.watch
+
+notifiListeners()で変更されたら呼ばれる。
+
+```dart
+final model = context.watch<CountModel>();
+```
+
+### context.read
+
+１回しか呼ばれない。notifiListeners()で変更されても呼ばれない。
+
+```dart
+final model = context.read<CountModel>();
+```
+
+### context.select
+
+特定のpropertyが更新された時だけ呼ばれる
+
+```dart
+final count = context.select<CountModel, int>(
+      (CountModel model) => model.count,
+    );
+```
