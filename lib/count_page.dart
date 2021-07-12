@@ -11,7 +11,7 @@ class CountPage extends StatelessWidget {
         appBar: AppBar(),
         body: Center(
           child: Consumer<CountModel>(builder: (context, model, child) {
-            final count = model.counter;
+            final count = model.count;
             return Text(
               '$count',
               style: TextStyle(

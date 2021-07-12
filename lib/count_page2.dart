@@ -12,7 +12,7 @@ class CountPage2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = Provider.of<CountModel>(context);
-    final count = model.counter;
+    final count = model.count;
     return Scaffold(
       appBar: AppBar(),
       body: Center(

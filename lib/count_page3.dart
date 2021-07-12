@@ -20,7 +20,7 @@ class CountPageBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final model = context.watch<CountModel>();
-    final count = model.counter;
+    final count = model.count;
     return Center(
       child: Text(
         '$count',
