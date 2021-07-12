@@ -1,3 +1,5 @@
+# providerについての解説
+
 ## providerの基本の書き方
 
 - ChangeNotifierProvider<Model>で囲んでmodelをイニシャライズする
@@ -112,3 +114,6 @@ final count = context.select<CountModel, int>(
       (CountModel model) => model.count,
     );
 ```
+  
+ # 参考文献
+https://pub.dev/packages/provider 
